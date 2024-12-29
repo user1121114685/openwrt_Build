@@ -117,6 +117,8 @@ jobs:
         # 2 启用 微软kms激活服务
         sed -i 's/# CONFIG_PACKAGE_luci-app-vlmcsd is not set/CONFIG_PACKAGE_luci-app-vlmcsd=y/' feeds/smpackage/.github/diy/${{matrix.target}}.config
         sed -i 's/# CONFIG_PACKAGE_vlmcsd is not set/CONFIG_PACKAGE_vlmcsd=y/' feeds/smpackage/.github/diy/${{matrix.target}}.config
+        # 3 启用 passwall 取代 openclash
+        sed -i 's/CONFIG_PACKAGE_luci-app-openclash=y/CONFIG_PACKAGE_luci-app-passwall=y/' feeds/smpackage/.github/diy/${{matrix.target}}.config
         #        自定义代码执行结束
         
         cp -f feeds/smpackage/.github/diy/${{matrix.target}}.config .config && make defconfig
