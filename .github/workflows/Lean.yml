@@ -106,13 +106,10 @@ jobs:
         #cp -f feeds/smpackage/.github/diy/index_x86.htm package/lean/autocore/files/x86/index.htm
         sed -i "s/%D %V, %C/openwrt $(date +'%m.%d') by kenzo/g" package/base-files/files/etc/banner
         sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci/Makefile
-        ./scripts/feeds update -a 
-        sed -i 's#GO_PKG_TARGET_VARS.*# #g' feeds/packages/utils/v2dat/Makefile 
-        ./scripts/feeds install -a
-        
         #        自定义代码执行
         # 1 启用 frps
         sed -i 's/# CONFIG_PACKAGE_frps is not set/CONFIG_PACKAGE_frps=y/' feeds/smpackage/.github/diy/${{matrix.target}}.config
+        sed -i 's/PKG_VERSION:=0.51.3/PKG_VERSION:=0.61.1/' feeds/smpackage/frp/Makefile
         sed -i 's/# CONFIG_PACKAGE_luci-app-frps is not set/CONFIG_PACKAGE_luci-app-frps=y/' feeds/smpackage/.github/diy/${{matrix.target}}.config
         # 2 启用 微软kms激活服务
         sed -i 's/# CONFIG_PACKAGE_luci-app-vlmcsd is not set/CONFIG_PACKAGE_luci-app-vlmcsd=y/' feeds/smpackage/.github/diy/${{matrix.target}}.config
@@ -120,7 +117,10 @@ jobs:
         # 3 启用 passwall 取代 openclash
         sed -i 's/CONFIG_PACKAGE_luci-app-openclash=y/CONFIG_PACKAGE_luci-app-passwall=y/' feeds/smpackage/.github/diy/${{matrix.target}}.config
         #        自定义代码执行结束
-        
+  
+        ./scripts/feeds update -a 
+        sed -i 's#GO_PKG_TARGET_VARS.*# #g' feeds/packages/utils/v2dat/Makefile 
+        ./scripts/feeds install -a
         cp -f feeds/smpackage/.github/diy/${{matrix.target}}.config .config && make defconfig
         sed -i 's/CONFIG_BINUTILS_VERSION="2.42"/CONFIG_BINUTILS_VERSION="2.43.1"/' .config
 
