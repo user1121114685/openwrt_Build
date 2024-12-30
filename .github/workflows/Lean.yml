@@ -7,14 +7,15 @@
 name: Lean
 
 on:
+  schedule:
+    - cron: '0 4 25 * *'  # 每月 25 日 UTC 时间的 04:00 执行
   repository_dispatch:
   workflow_dispatch:
     inputs:
       ssh:
-        description: 'ssh'
+        description: 'SSH'
         required: false
         default: 'false'
-
 env:
   UPLOAD_BIN_DIR: false
   UPLOAD_FIRMWARE: true
@@ -74,8 +75,7 @@ jobs:
         git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
         cd openwrt
         sed -i '$a src-git smpackage https://github.com/kenzok8/small-package' feeds.conf.default
-        cd package
-        git clone https://github.com/user1121114685/luci-app-frps.git
+
 
     - name: Free up disk space
       env:
@@ -89,6 +89,7 @@ jobs:
     - name: Update feeds
       working-directory: ./openwrt
       run: |
+        rm -rf ./feeds
         ./scripts/feeds update -a
 
     - name: Defconfig ${{matrix.target}}
@@ -109,13 +110,12 @@ jobs:
         #        自定义代码执行
         # 1 启用 frps
         sed -i 's/# CONFIG_PACKAGE_frps is not set/CONFIG_PACKAGE_frps=y/' feeds/smpackage/.github/diy/${{matrix.target}}.config
-        sed -i 's/PKG_VERSION:=0.51.3/PKG_VERSION:=0.61.1/' feeds/smpackage/frp/Makefile
         sed -i 's/# CONFIG_PACKAGE_luci-app-frps is not set/CONFIG_PACKAGE_luci-app-frps=y/' feeds/smpackage/.github/diy/${{matrix.target}}.config
         # 2 启用 微软kms激活服务
         sed -i 's/# CONFIG_PACKAGE_luci-app-vlmcsd is not set/CONFIG_PACKAGE_luci-app-vlmcsd=y/' feeds/smpackage/.github/diy/${{matrix.target}}.config
         sed -i 's/# CONFIG_PACKAGE_vlmcsd is not set/CONFIG_PACKAGE_vlmcsd=y/' feeds/smpackage/.github/diy/${{matrix.target}}.config
         # 3 启用 passwall 取代 openclash
-        sed -i 's/CONFIG_PACKAGE_luci-app-openclash=y/CONFIG_PACKAGE_luci-app-passwall=y/' feeds/smpackage/.github/diy/${{matrix.target}}.config
+        sed -i '/CONFIG_PACKAGE_luci-app-passwall=y/c\CONFIG_PACKAGE_luci-i18n-passwall-zh-cn=y\nCONFIG_PACKAGE_luci-app-passwall=y\nCONFIG_FEED_passwallluci=y\nCONFIG_FEED_passwall=y' feeds/smpackage/.github/diy/${{matrix.target}}.config
         #        自定义代码执行结束
   
         ./scripts/feeds update -a 
