@@ -110,6 +110,7 @@ jobs:
         #        自定义代码执行
         # 1 启用 frps
         sed -i 's/PKG_VERSION:=0\.51\.3/PKG_VERSION:=0.61.1/g' feeds/packages/net/frp/Makefile
+        sed -i 's/83032399773901348c660d41c967530e794ab58172ccd070db89d5e50d915fef/95c567188d5635a7ac8897a6f93ae0568d0ac4892581a96c89874a992dd6a73c/g' feeds/packages/net/frp/Makefile
         rm -rf feeds/luci/applications/luci-app-frps
         git clone https://github.com/user1121114685/luci-app-frps.git feeds/luci/applications/luci-app-frps
         sed -i 's/# CONFIG_PACKAGE_frps is not set/CONFIG_PACKAGE_frps=y/' feeds/smpackage/.github/diy/${{matrix.target}}.config
