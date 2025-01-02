@@ -119,7 +119,7 @@ jobs:
         sed -i 's/# CONFIG_PACKAGE_luci-app-vlmcsd is not set/CONFIG_PACKAGE_luci-app-vlmcsd=y/' feeds/smpackage/.github/diy/${{matrix.target}}.config
         sed -i 's/# CONFIG_PACKAGE_vlmcsd is not set/CONFIG_PACKAGE_vlmcsd=y/' feeds/smpackage/.github/diy/${{matrix.target}}.config
         # 3 启用 passwall 取代 openclash
-        sed -i '/CONFIG_PACKAGE_luci-app-openclash=y/c\CONFIG_PACKAGE_luci-i18n-passwall-zh-cn=y\nCONFIG_PACKAGE_luci-app-passwall=y\nCONFIG_FEED_passwallluci=y\nCONFIG_FEED_passwall=y' feeds/smpackage/.github/diy/${{matrix.target}}.config
+        sed -i '/CONFIG_PACKAGE_luci-app-openclash=y/c\CONFIG_PACKAGE_luci-i18n-passwall-zh-cn=y\nCONFIG_PACKAGE_luci-app-passwall=y\nCONFIG_FEED_passwallluci=y\nCONFIG_FEED_passwall=y\nCONFIG_PACKAGE_kmod-nf-conntrack-netlink=y\nCONFIG_PACKAGE_shadowsocks-libev-ss-local=y\nCONFIG_PACKAGE_shadowsocks-libev-ss-redir=y\nCONFIG_PACKAGE_shadowsocks-libev-ss-server=y' feeds/smpackage/.github/diy/${{matrix.target}}.config
         #        自定义代码执行结束
   
         ./scripts/feeds update -a 
